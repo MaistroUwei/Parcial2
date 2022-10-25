@@ -1,53 +1,31 @@
-const FS = require('../firebase');
+let { userData } = require("../data");
 
-const { db } = FS;
-const createMovie = async (req, res) => {
-    try{
-        const {body: movie } = req;
-        const moviesDB = db.collection('movies');   
-        const { _path: { segments } } = await moviesDB.add(movie);
-        const id = segments[1];
-        res.send({
-            status: 200,
-            id
-        });
-    }catch (error){
-        console.log(error);
-        res.send(error);
-    }
-}
-
-const getMovie = async (req, res) => {
+const getUserData = async (req, res) => {
     try {
         const {params : { id }} = req;
-        const moviesDB = db.collection('movies').doc(id);
-        const { _fieldsProto : { time, author, name, rating }} = await moviesDB.get();
+        console.log(id)
+        const objeto = userData.find(obj => obj.id == id);
+        console.log(objeto)
+        // const { }
         res.send({
             status: 200,
-            time: time.stringValue,
-            author: author.stringValue,
-            name: name.stringValue,
-            rating: rating.stringValue
+            user:{
+                fullName: (`${objeto.firstName} ${objeto.lastName} ${objeto.maidenName}`),
+                email: objeto.email,
+                age: objeto.age,
+                address: objeto.address,
+                jobTitle: objeto.company.title
+            }
         })
     }catch(error){
-        res.send(error);
-    }
-}
-
-const deleteMovie = async (req, res) => {
-    try {
-        const { params : { id }} = req;
-        const movieDB = db.collection('movies').doc(id);
-        await movieDB.delete();
         res.send({
-            status: 200
-        });
-    }catch(error){
-        res.send(error);
+            status:500,
+            error});
+        
     }
 }
 
-const updateMovie = async (req, res) => {
+const updateUserAddress = async (req, res) => {
     try{
         const {body: movie } = req;
         const { id, time, author, name, rating } = movie;
@@ -68,22 +46,7 @@ const updateMovie = async (req, res) => {
     }
 }
 
-const getMovies = async (req, res) => {
-    try {
-        const moviesDB = await db.collection('movies').get();
-        const resp = moviesDB.docs.map(doc => doc.data());
-        res.send({
-            resp
-        })
-    }catch(error){
-        res.send(error);
-    }
-}
-
 module.exports = {
-    createMovie,
-    getMovie,
-    deleteMovie,
-    updateMovie,
-    getMovies
+    getUserData,
+    updateUserAddress,
 }

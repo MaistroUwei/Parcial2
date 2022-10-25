@@ -11,7 +11,7 @@ const {
     // router.post('/create-movie', createMovie);
     router.get('/get-user-data/:id', getUserData);
     // router.delete('/delete-movie/:id', deleteMovie);
-    router.put('/update-user-address', updateUserAddress);
+    router.put('/update-user-address/:id', updateUserAddress);
     // router.get('/get-movies', getMovies);
 
     module.exports = {
